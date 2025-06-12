@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Heartbeat Hug</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      width: 100%;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #ffe6f0, #fff4f4);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow: hidden;
+    }
+    .text {
+      font-size: 1.2rem;
+      color: #333;
+      text-align: center;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    .heart {
+      width: 100px;
+      height: 90px;
+      background: #ff6699;
+      position: relative;
+      transform: rotate(-45deg);
+      animation: none;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(255, 105, 135, 0.3);
+      transition: box-shadow 0.3s ease;
+    }
+    .heart::before,
+    .heart::after {
+      content: '';
+      width: 100px;
+      height: 90px;
+      background: #ff6699;
+      position: absolute;
+      border-radius: 50%;
+    }
+    .heart::before {
+      top: -50px;
+      left: 0;
+    }
+    .heart::after {
+      left: 50px;
+      top: 0;
+    }
+    @keyframes heartbeat {
+      0% { transform: scale(1) rotate(-45deg); box-shadow: 0 0 20px rgba(255,105,135,0.4); }
+      25% { transform: scale(1.05) rotate(-45deg); box-shadow: 0 0 30px rgba(255,105,135,0.6); }
+      50% { transform: scale(1) rotate(-45deg); box-shadow: 0 0 20px rgba(255,105,135,0.4); }
+      75% { transform: scale(1.1) rotate(-45deg); box-shadow: 0 0 35px rgba(255,105,135,0.7); }
+      100% { transform: scale(1) rotate(-45deg); box-shadow: 0 0 20px rgba(255,105,135,0.4); }
+    }
+    .pulsing {
+      animation: heartbeat 1.3s infinite;
+    }
+    .sent {
+      margin-top: 30px;
+      font-size: 1rem;
+      color: #444;
+      text-align: center;
+    }
+    .hug-btn {
+      margin-top: 25px;
+      padding: 10px 25px;
+      background: #ff9ebf;
+      border: none;
+      border-radius: 30px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: background 0.3s, transform 0.3s;
+    }
+    .hug-btn:active {
+      transform: scale(0.97);
+    }
+  </style>
+</head>
+<body>
+  <div class="text">Put the phone near your chest, Vivuu...<br>Tap the heart and feel me hugging you close 💓</div>
+  <div class="heart" id="heart"></div>
+  <button class="hug-btn" id="sendHug" style="display:none;">Hug Pass to Addu 🤗</button>
+  <div class="sent" id="sentMessage" style="display:none;">Hug sent to Addu 💖</div>
+
+  <script>
+    const heart = document.getElementById('heart');
+    const button = document.getElementById('sendHug');
+    const sent = document.getElementById('sentMessage');
+
+    heart.addEventListener('click', () => {
+      heart.classList.toggle('pulsing');
+
+      // ✅ Device vibration
+      if (navigator.vibrate) {
+        navigator.vibrate([300, 100, 300, 100, 300]);
+      }
+
+      // Show hug button after 2.5s
+      if (!button.style.display || button.style.display === 'none') {
+        setTimeout(() => {
+          button.style.display = 'inline-block';
+        }, 2500);
+      }
+    });
+
+    button.addEventListener('click', () => {
+      sent.style.display = 'block';
+      button.disabled = true;
+      button.innerText = 'Hug Sent 💌';
+    });
+  </script>
+</body>
+</html>
