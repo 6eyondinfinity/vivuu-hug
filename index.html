@@ -1,28 +1,28 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Heartbeat Hug</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body {
-      height: 100%;
-      width: 100%;
+    body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #ffe6f0, #fff4f4);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      height: 100vh;
       overflow: hidden;
+      padding: 20px;
+      text-align: center;
     }
     .text {
       font-size: 1.2rem;
       color: #333;
-      text-align: center;
       margin-bottom: 30px;
       line-height: 1.6;
     }
@@ -32,10 +32,9 @@
       background: #ff6699;
       position: relative;
       transform: rotate(-45deg);
-      animation: none;
-      cursor: pointer;
       box-shadow: 0 0 20px rgba(255, 105, 135, 0.3);
-      transition: box-shadow 0.3s ease;
+      cursor: pointer;
+      margin-bottom: 20px;
     }
     .heart::before,
     .heart::after {
@@ -46,53 +45,100 @@
       position: absolute;
       border-radius: 50%;
     }
-    .heart::before {
-      top: -50px;
-      left: 0;
-    }
-    .heart::after {
-      left: 50px;
-      top: 0;
-    }
+    .heart::before { top: -50px; left: 0; }
+    .heart::after { top: 0; left: 50px; }
     @keyframes heartbeat {
-      0% { transform: scale(1) rotate(-45deg); box-shadow: 0 0 20px rgba(255,105,135,0.4); }
-      25% { transform: scale(1.05) rotate(-45deg); box-shadow: 0 0 30px rgba(255,105,135,0.6); }
-      50% { transform: scale(1) rotate(-45deg); box-shadow: 0 0 20px rgba(255,105,135,0.4); }
-      75% { transform: scale(1.1) rotate(-45deg); box-shadow: 0 0 35px rgba(255,105,135,0.7); }
-      100% { transform: scale(1) rotate(-45deg); box-shadow: 0 0 20px rgba(255,105,135,0.4); }
+      0%, 100% { transform: scale(1) rotate(-45deg); }
+      50% { transform: scale(1.1) rotate(-45deg); }
     }
-    .pulsing {
-      animation: heartbeat 1.3s infinite;
-    }
-    .sent {
-      margin-top: 30px;
-      font-size: 1rem;
-      color: #444;
-      text-align: center;
-    }
+    .pulsing { animation: heartbeat 1.3s infinite; }
+
     .hug-btn {
-      margin-top: 25px;
+      margin-top: 10px;
       padding: 10px 25px;
       background: #ff9ebf;
       border: none;
       border-radius: 30px;
       color: white;
       font-weight: bold;
-      cursor: pointer;
       font-size: 1rem;
       box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-      transition: background 0.3s, transform 0.3s;
+      cursor: pointer;
+      display: none;
     }
-    .hug-btn:active {
-      transform: scale(0.97);
+
+    .sent {
+      margin-top: 20px;
+      color: #444;
+      font-size: 1rem;
+      opacity: 0;
+      transition: opacity 0.6s ease-in;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 25px;
+      border-radius: 20px;
+      width: 85%;
+      max-width: 400px;
+      text-align: center;
+    }
+
+    .modal-content h3 {
+      margin-bottom: 15px;
+      color: #e85c90;
+    }
+
+    .slider {
+      width: 100%;
+      margin: 20px 0;
+    }
+
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .close-btn {
+      margin-top: 15px;
+      background: #ff6699;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <div class="text">Put the phone near your chest, Vivuu...<br>Tap the heart and feel me hugging you close 💓</div>
   <div class="heart" id="heart"></div>
-  <button class="hug-btn" id="sendHug" style="display:none;">Hug Pass to Addu 🤗</button>
-  <div class="sent" id="sentMessage" style="display:none;">Hug sent to Addu 💖</div>
+  <button class="hug-btn" id="sendHug">Hug Pass to Addu 🤗</button>
+  <div class="sent" id="sentMessage">Hug sent to Addu 💖</div>
+
+  <div class="modal" id="durationModal">
+    <div class="modal-content">
+      <h3>How long do you want to feel Addu’s hug? 🫂</h3>
+      <input type="range" min="10" max="60" step="5" value="10" class="slider" id="durationSlider">
+      <div class="slider-labels">
+        <span>10s</span><span>15s</span><span>30s</span><span>1 min</span>
+      </div>
+      <button class="close-btn" onclick="startHug()">Start Hug 💞</button>
+    </div>
+  </div>
 
   <audio id="heartbeatSound" src="https://cdn.pixabay.com/download/audio/2022/03/14/audio_4b34de87e3.mp3?filename=heartbeat-deep-112973.mp3" preload="auto"></audio>
 
@@ -100,33 +146,50 @@
     const heart = document.getElementById('heart');
     const button = document.getElementById('sendHug');
     const sent = document.getElementById('sentMessage');
+    const modal = document.getElementById('durationModal');
+    const slider = document.getElementById('durationSlider');
     const sound = document.getElementById('heartbeatSound');
+    let hugInterval;
 
     heart.addEventListener('click', () => {
       heart.classList.toggle('pulsing');
-
-      // ✅ Vibration (only on supported phones)
       if (navigator.vibrate) {
-        navigator.vibrate([300, 100, 300, 100, 300]);
+        navigator.vibrate([300, 200, 300, 200, 300]);
       }
-
-      // ✅ Heartbeat sound
       sound.currentTime = 0;
-      sound.play().catch(e => console.log("Autoplay blocked:", e));
-
-      // Show Hug button after delay
-      if (!button.style.display || button.style.display === 'none') {
-        setTimeout(() => {
-          button.style.display = 'inline-block';
-        }, 2500);
-      }
+      sound.play().catch(() => {});
+      setTimeout(() => {
+        button.style.display = 'inline-block';
+      }, 2500);
     });
 
     button.addEventListener('click', () => {
-      sent.style.display = 'block';
       button.disabled = true;
-      button.innerText = 'Hug Sent 💌';
+      button.innerText = 'Sending Hug... 💌';
+      setTimeout(() => {
+        sent.style.opacity = 1;
+        button.style.display = 'none';
+        modal.style.display = 'flex';
+      }, 1500);
     });
+
+    function startHug() {
+      modal.style.display = 'none';
+      const duration = parseInt(slider.value) * 1000;
+      let elapsed = 0;
+
+      hugInterval = setInterval(() => {
+        if (navigator.vibrate) {
+          navigator.vibrate([250]);
+        }
+        sound.currentTime = 0;
+        sound.play().catch(() => {});
+        elapsed += 1300;
+        if (elapsed >= duration) {
+          clearInterval(hugInterval);
+        }
+      }, 1300);
+    }
   </script>
 </body>
 </html>
