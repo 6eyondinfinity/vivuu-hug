@@ -94,20 +94,27 @@
   <button class="hug-btn" id="sendHug" style="display:none;">Hug Pass to Addu 🤗</button>
   <div class="sent" id="sentMessage" style="display:none;">Hug sent to Addu 💖</div>
 
+  <audio id="heartbeatSound" src="https://cdn.pixabay.com/download/audio/2022/03/14/audio_4b34de87e3.mp3?filename=heartbeat-deep-112973.mp3" preload="auto"></audio>
+
   <script>
     const heart = document.getElementById('heart');
     const button = document.getElementById('sendHug');
     const sent = document.getElementById('sentMessage');
+    const sound = document.getElementById('heartbeatSound');
 
     heart.addEventListener('click', () => {
       heart.classList.toggle('pulsing');
 
-      // ✅ Device vibration
+      // ✅ Vibration (only on supported phones)
       if (navigator.vibrate) {
         navigator.vibrate([300, 100, 300, 100, 300]);
       }
 
-      // Show hug button after 2.5s
+      // ✅ Heartbeat sound
+      sound.currentTime = 0;
+      sound.play().catch(e => console.log("Autoplay blocked:", e));
+
+      // Show Hug button after delay
       if (!button.style.display || button.style.display === 'none') {
         setTimeout(() => {
           button.style.display = 'inline-block';
