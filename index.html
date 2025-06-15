@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -171,8 +170,9 @@
         button.style.display = 'none';
         modal.style.display = 'flex';
 
-        // Send Telegram notification
-        fetch('https://api.telegram.org/bot7299555617:AAFdkMrQOLa5qz4qz-8_p7NY87SdzYId41U/sendMessage?chat_id=5625080699&text=Vivuu just sent you a hug 🤗💖 Go feel it, Addu...');
+        // Send Telegram notification to Addu
+        fetch('https://api.telegram.org/bot7299555617:AAFdkMrQOLa5qz4qz-8_p7NY87SdzYId41U/sendMessage?chat_id=5625080699&text=' + 
+          encodeURIComponent(`Vivuu’s missing you Addu… 🥺💓\nShe needs you. Go hug her addu… 💖`));
       }, 1500);
     });
 
